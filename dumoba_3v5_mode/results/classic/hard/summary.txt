@@ -1,0 +1,10 @@
+=== Dumoba 3v5 Evaluation Summary ===
+Difficulty:      hard
+Map type:        classic
+Episodes:        100
+Win rate (blue): 0.0%
+Avg ep length:   29.00 steps
+Avg blue hero HP sum: 0.00
+Avg red hero  HP sum: 54.00
+Avg blue base HP:     20.00
+Avg red base  HP:     20.00

@@ -123,16 +123,16 @@ class DumobaEnv(gym.Env):
         elif self.difficulty == "medium":
             # buffed red
             self.max_blue_hero_hp = 10
-            self.max_red_hero_hp = 16
+            self.max_red_hero_hp = 12
             self.blue_attack_damage = 2
             self.red_attack_damage = 3
             self.red_respawn_charges = 0
         elif self.difficulty == "hard":
             # buffed red + respawns
             self.max_blue_hero_hp = 10
-            self.max_red_hero_hp = 18
+            self.max_red_hero_hp = 12
             self.blue_attack_damage = 2
-            self.red_attack_damage = 4
+            self.red_attack_damage = 3
             self.red_respawn_charges = 1
         else:
             raise ValueError(f"Unknown difficulty mode: {self.difficulty}")

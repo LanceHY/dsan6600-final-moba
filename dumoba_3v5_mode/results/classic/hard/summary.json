@@ -1,0 +1,11 @@
+{
+  "difficulty": "hard",
+  "map_type": "classic",
+  "episodes": 100,
+  "win_rate_blue": 0.0,
+  "avg_episode_length": 29.0,
+  "avg_blue_hero_hp_sum": 0.0,
+  "avg_red_hero_hp_sum": 54.0,
+  "avg_blue_base_hp": 20.0,
+  "avg_red_base_hp": 20.0
+}

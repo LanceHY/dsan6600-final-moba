@@ -7,7 +7,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
-from dumoba_env import (
+from dumoba_3v5_mode.dumoba_env import (
     DumobaEnv,
     GRID_SIZE,
     MAP_CHANNELS,

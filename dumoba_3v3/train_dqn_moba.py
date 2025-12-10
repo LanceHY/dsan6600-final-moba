@@ -6,12 +6,9 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
-from dumoba_env import DumobaEnv, MAP_OBS_N, PLAYER_OBS_N
+from dumoba_3v5_mode.dumoba_env import DumobaEnv, MAP_OBS_N, PLAYER_OBS_N
 
-
-# ==========================
-#  DQN Network
-# ==========================
+# Try DQN Network
 
 class DQN(nn.Module):
     def __init__(self, obs_dim: int, num_actions: int):
@@ -28,9 +25,6 @@ class DQN(nn.Module):
         return self.net(x)
 
 
-# ==========================
-#  Replay Buffer
-# ==========================
 
 class ReplayBuffer:
     def __init__(self, capacity: int):
@@ -48,10 +42,6 @@ class ReplayBuffer:
         return len(self.buffer)
 
 
-# ==========================
-#  Helpers for actions
-# ==========================
-
 def idx_to_multidiscrete(idx: int, nvec: np.ndarray) -> np.ndarray:
     """
     Convert a flat action index into a MultiDiscrete action vector.
@@ -63,9 +53,6 @@ def random_action_idx(num_actions: int) -> int:
     return np.random.randint(0, num_actions)
 
 
-# ==========================
-#  Training Loop
-# ==========================
 
 def train_dqn(
     num_episodes: int = 500,
@@ -113,7 +100,6 @@ def train_dqn(
         for t in range(max_steps_per_episode):
             global_step += 1
 
-            # --- Choose action (epsilon-greedy over ACTION INDEX) ---
             if random.random() < epsilon:
                 action_idx = random_action_idx(num_actions)
             else:
@@ -128,28 +114,24 @@ def train_dqn(
             done = terminated or truncated
             episode_reward += reward
 
-            # Store transition
             replay_buffer.push(state, action_idx, reward, next_state, done)
 
             state = next_state
 
-            # --- Update DQN ---
+            # Update DQN
             if len(replay_buffer) >= batch_size:
                 batch_states, batch_actions, batch_rewards, batch_next_states, batch_dones = \
                     replay_buffer.sample(batch_size)
 
-                # Convert to tensors
                 batch_states = torch.tensor(batch_states, dtype=torch.float32, device=device)
                 batch_actions = torch.tensor(batch_actions, dtype=torch.int64, device=device)
                 batch_rewards = torch.tensor(batch_rewards, dtype=torch.float32, device=device)
                 batch_next_states = torch.tensor(batch_next_states, dtype=torch.float32, device=device)
                 batch_dones = torch.tensor(batch_dones, dtype=torch.float32, device=device)
 
-                # Q(s,a)
-                q_values = policy_net(batch_states)  # [B, num_actions]
+                q_values = policy_net(batch_states) 
                 q_values = q_values.gather(1, batch_actions.unsqueeze(1)).squeeze(1)  # [B]
 
-                # Target: r + gamma * max_a' Q_target(s', a') * (1 - done)
                 with torch.no_grad():
                     next_q_values = target_net(batch_next_states).max(dim=1)[0]
                     targets = batch_rewards + gamma * next_q_values * (1.0 - batch_dones)
@@ -176,7 +158,6 @@ def train_dqn(
         )
 
     env.close()
-    # Save model at the end
     torch.save(policy_net.state_dict(), "dumoba_dqn.pt")
     print("Training finished, model saved to dumoba_dqn.pt")
 
